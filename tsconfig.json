@@ -9,7 +9,7 @@
     "noImplicitReturns": true,
     "alwaysStrict": true,
     "strict": true,
-    "outDir": "dist"
+    "outDir": "build"
   },
   "include": [
     "./src/**/*.ts",

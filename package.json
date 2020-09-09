@@ -2,16 +2,19 @@
   "name": "myment",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/myment.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsc -w"
+    "test": "tsc && mocha build/test/**/*.js",
+    "build": "npm test && cp ./build/src/* ./dist && uglifyjs ./dist/myment.js -o ./dist/myment.min.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/expect": "^24.3.0",
     "@types/mocha": "^8.0.3",
-    "ts-mocha": "^7.0.0"
+    "expect": "^26.4.2",
+    "mocha": "^8.1.3",
+    "typescript": "^4.0.2",
+    "uglify-js": "^3.10.4"
   }
 }
