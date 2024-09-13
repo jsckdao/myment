@@ -114,6 +114,7 @@ export default class Mymont implements IDate {
     isSame(date: Mymont | string, key?: DateKeys): boolean;
     isSameOrBefore(date: Mymont | string, key?: DateKeys): boolean;
     isSameOrAfter(date: Mymont | string, key?: DateKeys): boolean;
+    measure(date: Mymont | string): IDuration;
 }
 export declare class Duration implements IDuration {
     year: number;

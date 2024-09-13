@@ -220,6 +220,22 @@ var Mymont = /** @class */ (function () {
     Mymont.prototype.isSameOrAfter = function (date, key) {
         return compareMyment(this, tryParse(date, this.formatStr), function (a, b) { return a >= b; }, key);
     };
+    Mymont.prototype.measure = function (date) {
+        var target = tryParse(date, this.formatStr);
+        var diff = this.time - target.time;
+        var duration = {};
+        lookKeys(this, function (h) {
+            var k = h.key === 'date' ? 'day' : h.key;
+            if (diff === 0) {
+                duration[k] = 0;
+                return;
+            }
+            var _round = diff < 0 ? Math.ceil : Math.floor;
+            duration[k] = _round(diff / calcDuration(h.key === 'date' ? 'day' : k));
+            diff %= calcDuration(k);
+        });
+        return duration;
+    };
     return Mymont;
 }());
 exports.default = Mymont;
@@ -312,7 +328,7 @@ function matchToken(part) {
     });
 }
 function calcDuration(key, val) {
-    if (val === void 0) { val = 0; }
+    if (val === void 0) { val = 1; }
     switch (key) {
         case "year":
             return val * 365 * 24 * 60 * 60 * 1000;
@@ -331,11 +347,10 @@ function calcDuration(key, val) {
     }
 }
 function lookKeys(op, cb) {
-    var regx = new RegExp("^".concat(Object.keys(op).join("|"), "$"));
     return tokenHandles
         .filter(function (_a) {
         var key = _a.key;
-        return regx.test(key);
+        return key in op;
     })
         .sort(sortHandles)
         .forEach(cb);

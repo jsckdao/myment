@@ -225,6 +225,23 @@ export default class Mymont implements IDate {
   isSameOrAfter(date: Mymont | string, key?: DateKeys) {
     return compareMyment(this, tryParse(date, this.formatStr), (a, b) => a >= b, key);
   }
+
+  measure(date: Mymont | string): IDuration {
+    const target = tryParse(date, this.formatStr);
+    let diff = this.time - target.time;
+    const duration: IDuration = {};
+    lookKeys(this, (h) => {
+      const k = h.key === 'date' ? 'day' : h.key;
+      if (diff === 0) {
+        duration[k] = 0;
+        return;
+      }
+      const _round = diff < 0 ? Math.ceil : Math.floor;
+      duration[k] = _round(diff / calcDuration(h.key === 'date' ? 'day' : k));
+      diff %= calcDuration(k);
+    });
+    return duration;
+  }
 }
 
 export class Duration implements IDuration {
@@ -354,9 +371,8 @@ function calcDuration(key: DurationKeys, val: number = 0) {
 }
 
 function lookKeys(op: IDate, cb: (handle: TokenHandle) => void) {
-  const regx = new RegExp(`^${Object.keys(op).join("|")}$`);
   return tokenHandles
-    .filter(({ key }) => regx.test(key))
+    .filter(({ key }) => key in op)
     .sort(sortHandles)
     .forEach(cb);
 }
